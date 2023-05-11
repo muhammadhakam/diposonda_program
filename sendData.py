@@ -9,7 +9,7 @@ BAUD_RATE = 9600
 
 Command = ""
 
-REMOTE_NODE_ID = "DIPO_A"
+REMOTE_NODE_ID = "Router"
 
 
 

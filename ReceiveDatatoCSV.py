@@ -69,8 +69,6 @@ def Receive():
 
     field = '<Diposonda,TeamCode,Time,csc,data_count,flt_md,alt_rel,probe_stat,selfStand_stat,temp,alt_gps,lat_val,lng_val,sat_val,y_ori,z_ori,gasCO,gasCH4,gasEthanol,gasH2,gasNH3,gasNO2>'
     rows = []
-    rowsTrue = []
-    filename = "test.csv"
     device = XBeeDevice(PORT, BAUD_RATE)
 
     try:
@@ -83,12 +81,6 @@ def Receive():
             xbee_message = device.read_data()
             if xbee_message is not None:
 
-                #print("From %s >> %s" % (xbee_message.remote_device.get_64bit_addr(),
-                #                         xbee_message.data.decode()))
-                #dataStream = ["From %s >> %s" % (xbee_message.remote_device.get_64bit_addr(),
-                #                         xbee_message.data.decode())]
-                #print("%s" % (xbee_message.data.decode()))
-
 
                 dataStream = (xbee_message.data.decode())
                 print(dataStream)
@@ -98,30 +90,20 @@ def Receive():
                 df = pd.DataFrame(data)
 
                 with open ('test.csv', 'a') as f:
+                    variable1 = 0
+                    variable2 = 1
                     df.to_csv(f, header=f.tell()==0, index=False)
-                
+                    reader = csv.reader(f)
+                    rows = list(reader)
+                    
+                    for i in range(rows):
+                        variable1 += 2
+                        variable2 += 2
+                        merged_row = rows[variable1] + rows[variable2]
+                        with open('output.csv', 'w', newline='') as output_file:
+                            writer = csv.writer(output_file)
+                            writer.writerow(merged_row)
                 time.sleep(1)
-
-
-
-                '''
-                with open(filename,'w', newline='') as csvfile:
-                    csvwriter = csv.writer(csvfile)
-                    csvwriter.writerow(field)
-                    csvwriter.writerows(rows)'''
-
-            '''while True:
-                    xbee_message2 = device.read_data()
-                    if xbee_message2 is not None:
-                        dataStream2 = [(xbee_message2.data.decode())]
-                        rows.append(dataStream2)
-                        rowsTrue.append(str(rows))
-
-                        with open(filename,'w') as csvfile:
-                            csvwriter = csv.writer(csvfile)
-                            csvwriter.writerow(field)
-                            csvwriter.writerows(rowsTrue)'''            
-
     finally:
         if device is not None and device.is_open():
             device.close()
